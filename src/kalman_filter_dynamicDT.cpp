@@ -17,7 +17,7 @@
 using namespace std;
 using namespace Eigen;
 
-double freq = 500;
+double freq = 100;
 double dt = 1/freq;
 string QUAD_NAME;
 // vrpn local time
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   // set subscriber name
-  nh.param<std::string>("QUAD_NAME", QUAD_NAME, "jackBi");
+  nh.param<std::string>("QUAD_NAME", QUAD_NAME, "jackQuad");
   char DEVICE_NAME[100];
   strcpy(DEVICE_NAME, "/vrpn_client_node/");
   strcat(DEVICE_NAME, QUAD_NAME.c_str());
@@ -115,11 +115,11 @@ int main(int argc, char **argv)
   C.topLeftCorner(m,m) = MatrixXd::Identity(m,m);
   C.topRightCorner(n-m,n-m) = MatrixXd::Zero(n-m,n-m);
 
-  R = 0.001*MatrixXd::Identity(n,n);
-  R.bottomRightCorner(n/2,n/2) = 0.07*MatrixXd::Identity(n/2,n/2);
+  R = 0.002*MatrixXd::Identity(n,n);
+  R.bottomRightCorner(n/2,n/2) = 0.1*MatrixXd::Identity(n/2,n/2);
   Q = 0.0005*MatrixXd::Identity(m,m);
 
-  P = MatrixXd::Constant(n,n, 0.05);
+  P = MatrixXd::Constant(n,n, 0.1);
 
   KalmanFilter kf(dt, A, C, R, Q, P);
 
@@ -139,9 +139,18 @@ int main(int argc, char **argv)
       KF UPDATE START
       */
       Eigen::VectorXd y(3);
-      y << pose_world.pose.position.x,pose_world.pose.position.y,pose_world.pose.position.z;      
-      kf.update(y);
-
+      y << pose_world.pose.position.x,pose_world.pose.position.y,pose_world.pose.position.z; 
+      if(dynamic_DT>0.001 && dynamic_DT<1){
+        cout<<dynamic_DT<<endl;
+        A.topLeftCorner(n/2,n/2) = MatrixXd::Identity(n/2,n/2);
+        A.topRightCorner(n/2,n/2) = dynamic_DT*MatrixXd::Identity(n/2,n/2);
+        A.bottomLeftCorner(n/2,n/2) = MatrixXd::Zero(n/2,n/2);
+        A.bottomRightCorner(n/2,n/2) = MatrixXd::Identity(n/2,n/2);     
+        kf.update(y, dynamic_DT, A);
+      } else {
+        kf.update(y);
+      }
+      
       VectorXd filtered_pose = kf.state();
       //cout<<kf.state().transpose()<<endl;
       // Publish position

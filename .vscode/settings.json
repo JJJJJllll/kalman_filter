@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "unordered_map": "cpp",
+        "ostream": "cpp",
+        "*.inc": "cpp",
+        "core": "cpp",
+        "system_error": "cpp",
+        "random": "cpp"
+    }
+}

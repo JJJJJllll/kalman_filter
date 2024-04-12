@@ -8,8 +8,8 @@ find_package(catkin REQUIRED
   roscpp
   rospy
   std_msgs
-  tf
-  message_generation)
+  tf)
+  # message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -65,12 +65,12 @@ find_package(catkin REQUIRED
 #   Action2.action
 # )
 
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  # Or other packages containing msgs
-)
+# ## Generate added messages and services with any dependencies listed here
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+#   # Or other packages containing msgs
+# )
 
 ###################################
 ## catkin specific configuration ##
@@ -86,9 +86,10 @@ catkin_package(
 #  LIBRARIES signal_sub_pub
   CATKIN_DEPENDS #other_catkin_pkg
   tf
-  message_runtime  std_msgs
+  std_msgs)
+  # message_runtime  std_msgs
 #  DEPENDS system_lib
-)
+# )
 
 ###########
 ## Build ##
@@ -113,6 +114,10 @@ add_executable(kalman_filter_pose3D
   src/kalman_filter_pose3D.cpp
   include/kalman_lib/kalman.cpp
 )
+add_executable(kalman_filter_inCallback
+  src/kalman_filter_inCallback.cpp
+  include/kalman_lib/kalman.cpp
+)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -120,6 +125,9 @@ add_executable(kalman_filter_pose3D
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(kalman_filter_pose3D
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(kalman_filter_inCallback
   ${catkin_LIBRARIES}
 )
 
