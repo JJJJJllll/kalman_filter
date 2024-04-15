@@ -20,7 +20,5 @@ sudo ln -sf eigen3/unsupported unsupported
 
 ## Initialize submodule kalman-cpp
 ```
-cd ~/catkin_ws/kalman_filter/include/kalman_lib
-git submodule init
-git submodule update
+roslaunch kalman_filter kalman_filter_inCallback.launch
 ```
