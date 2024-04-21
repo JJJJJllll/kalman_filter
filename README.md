@@ -18,7 +18,7 @@ sudo ln -sf eigen3/Eigen Eigen
 sudo ln -sf eigen3/unsupported unsupported
 ```
 
-## Initialize submodule kalman-cpp
+## Launch kalman-cpp
 ```
 roslaunch kalman_filter kalman_filter_inCallback.launch
 ```
